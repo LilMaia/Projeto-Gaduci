@@ -1,6 +1,5 @@
 // Importando o módulo Router do Express
 import { Router } from "express";
-import moment from "moment";
 import { generateUser } from "../mocker.js";
 import User from "../models/user.js";
 import {
@@ -111,7 +110,7 @@ router.post("/login", loginValidator, handleValidationErrors,  async (req, res) 
     const token = jwt.sign({ userId: user.id }, bcrypt.hashSync("ssEFwssf", 10), { expiresIn: '2h' });
 
     User.update({ token: token }, { where: { id: user.id } });
-    
+
     return res.json({ token });
     } catch (error) {
         res.status(500).json({ error: error.message });
