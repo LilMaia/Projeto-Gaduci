@@ -1,0 +1,31 @@
+/* Estilos para a div que envolve o formulário de login */
+.login-container {
+  display: flex; /* Exibir os elementos em linha */
+  justify-content: center; /* Centralizar horizontalmente */
+  align-items: center; /* Centralizar verticalmente */
+  height: 100vh; /* Altura igual à altura da viewport */
+  background-color: #f4f4f4; /* Cor de fundo */
+}
+
+/* Estilos para o cartão que contém o formulário de login */
+.card {
+  background-color: #fff; /* Cor de fundo do cartão */
+  width: 350px; /* Largura do cartão */
+  padding: 20px; /* Espaçamento interno */
+  border-radius: 4px; /* Borda arredondada */
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); /* Sombra do cartão */
+  text-align: center; /* Alinhamento do conteúdo */
+}
+
+/* Estilos para o título do cartão */
+.card-title {
+  font-size: 24px; /* Tamanho da fonte */
+  margin-bottom: 20px; /* Espaçamento inferior */
+}
+
+/* Estilos para o link do formulário de login */
+.login-link {
+  margin-top: 15px; /* Espaçamento superior */
+  cursor: pointer; /* Cursor ao passar por cima */
+  color: #007bff; /* Cor do link */
+}

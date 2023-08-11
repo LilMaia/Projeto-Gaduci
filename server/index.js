@@ -20,12 +20,18 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware: Configurando o cabeçalho CORS para permitir requisições de qualquer origem (*), com quaisquer métodos (*),
 // e especificando quais cabeçalhos podem ser usados na requisição
 app.use((req, res, next) => {
+  const allowedHeaders = [
+    "Accept",
+    "Accept-Language",
+    "Content-Language",
+    "Content-Type",
+    "Authorization", // Include the Authorization header
+    "verify-token" // Include the custom verify-token header
+  ];
+
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-Request-With, Content-Type, Accept"
-  );
+  res.setHeader("Access-Control-Allow-Headers", allowedHeaders.join(", ")); // Join the headers with a comma and space
   next();
 });
 

@@ -107,7 +107,7 @@ router.post("/login", loginValidator, handleValidationErrors,  async (req, res) 
     }
 
     // Gerar um token de acesso
-    const token = jwt.sign({ userId: user.id }, bcrypt.hashSync("ssEFwssf", 10), { expiresIn: '2h' });
+    const token = jwt.sign({ userId: user.id }, "ssEFwssf", { expiresIn: '2h' });
 
     User.update({ token: token }, { where: { id: user.id } });
 
@@ -117,6 +117,25 @@ router.post("/login", loginValidator, handleValidationErrors,  async (req, res) 
     }
 
 });
+
+router.get("/verify-token", async (req, res) => {
+    const token = req.headers.authorization;
+  
+    if (!token) {
+      return res.status(401).json({ message: "Token não fornecido" });
+    }
+  
+    try {
+      jwt.verify(token, "ssEFwssf"); // Verifique o token com a chave secreta
+      res.status(200).json({ message: "Token válido" });
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        res.status(401).json({ message: "Token expirado" });
+      } else {
+        res.status(403).json({ message: "Token inválido" });
+      }
+    }
+  });
 
 // Exporta o roteador para ser utilizado em outros módulos
 export default router;
