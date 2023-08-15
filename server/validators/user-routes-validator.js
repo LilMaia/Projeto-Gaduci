@@ -9,6 +9,7 @@ export const getUserValidator = [
   param("id").isInt().withMessage("ID de usuário inválido"),
 ];
 
+
 export const updateUserValidator = [
   body("id").isInt().withMessage("ID de usuário inválido"),
 ];

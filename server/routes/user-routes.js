@@ -14,7 +14,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 // Criando uma instância do roteador
-const router = Router();
+const userRoutes = Router();
 
 const handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);
@@ -24,7 +24,7 @@ const handleValidationErrors = (req, res, next) => {
     next();
 };
 
-router.post("/create-user", createUserValidator, handleValidationErrors, async (req, res) => {
+userRoutes.post("/create-user", createUserValidator, handleValidationErrors, async (req, res) => {
     try {
         const user = await User.create(req.body);
         res.status(201).json(user);
@@ -33,7 +33,7 @@ router.post("/create-user", createUserValidator, handleValidationErrors, async (
     }
 });
 
-router.get("/get-users", async (req, res) => {
+userRoutes.get("/get-users", async (req, res) => {
     try {
         const users = await User.findAll();
         res.status(200).json(users);
@@ -42,7 +42,7 @@ router.get("/get-users", async (req, res) => {
     }
 });
 
-router.get("/get-user/:id", getUserValidator, handleValidationErrors, async (req, res) => {
+userRoutes.get("/get-user/:id", getUserValidator, handleValidationErrors, async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
         res.status(200).json(user);
@@ -51,7 +51,7 @@ router.get("/get-user/:id", getUserValidator, handleValidationErrors, async (req
     }
 });
 
-router.put("/update-user", updateUserValidator, handleValidationErrors, async (req, res) => {
+userRoutes.put("/update-user", updateUserValidator, handleValidationErrors, async (req, res) => {
     try {
         const user = await User.findByPk(req.body.id);
         await user.update(req.body);
@@ -61,7 +61,7 @@ router.put("/update-user", updateUserValidator, handleValidationErrors, async (r
     }
 });
 
-router.delete("/delete-user/:id", deleteUserValidator, handleValidationErrors, async (req, res) => {
+userRoutes.delete("/delete-user/:id", deleteUserValidator, handleValidationErrors, async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
         await user.destroy();
@@ -71,7 +71,7 @@ router.delete("/delete-user/:id", deleteUserValidator, handleValidationErrors, a
     }
 });
 
-router.get("/generate-user/:quantity", async (req, res) => {
+userRoutes.get("/generate-user/:quantity", async (req, res) => {
     try {
         const quantity = req.params.quantity;
         let users = generateUser(quantity);
@@ -83,7 +83,7 @@ router.get("/generate-user/:quantity", async (req, res) => {
 });
 
 //delete all users on database
-router.delete("/delete-users", async (req, res) => {
+userRoutes.delete("/delete-users", async (req, res) => {
     try {
         const users = await User.findAll();
         await User.destroy({ where: {} });
@@ -93,7 +93,7 @@ router.delete("/delete-users", async (req, res) => {
     }
 });
 
-router.post("/login", loginValidator, handleValidationErrors,  async (req, res) => {
+userRoutes.post("/login", loginValidator, handleValidationErrors,  async (req, res) => {
     try {
     const user = await User.findOne({ where: { login: req.body.login} });
     
@@ -118,24 +118,7 @@ router.post("/login", loginValidator, handleValidationErrors,  async (req, res) 
 
 });
 
-router.get("/verify-token", async (req, res) => {
-    const token = req.headers.authorization;
-  
-    if (!token) {
-      return res.status(401).json({ message: "Token não fornecido" });
-    }
-  
-    try {
-      jwt.verify(token, "ssEFwssf"); // Verifique o token com a chave secreta
-      res.status(200).json({ message: "Token válido" });
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        res.status(401).json({ message: "Token expirado" });
-      } else {
-        res.status(403).json({ message: "Token inválido" });
-      }
-    }
-  });
+
 
 // Exporta o roteador para ser utilizado em outros módulos
-export default router;
+export default userRoutes;

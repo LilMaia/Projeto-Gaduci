@@ -1,9 +1,0 @@
-/* Estilos para os rótulos do formulário */
-.form-label {
-    font-weight: bold; /* Fonte em negrito */
-  }
-  
-  /* Estilos para os campos de entrada do formulário */
-  .form-control {
-    margin-bottom: 15px; /* Espaçamento inferior */
-  }
