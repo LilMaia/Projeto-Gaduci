@@ -21,3 +21,20 @@ export function generateUser(amount) {
 
   return users;
 }
+
+export function generateAdminUser() {
+  let users = [];
+  users.push({
+    name: "admin",
+    cpf: faker.phone.number('###.###.###-##'),
+    phone: faker.phone.number('(##) #####-####'),
+    email: "admin@gmail.com",
+    login: "admin",
+    password: "admin",
+    role: faker.helpers.arrayElement(["admin"]),
+    createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+    updatedAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+  });
+
+  return users;
+}
