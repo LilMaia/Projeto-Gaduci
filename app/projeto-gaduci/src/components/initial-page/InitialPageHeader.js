@@ -129,6 +129,12 @@ const InitialPageHeader = () => {
         setToastState(data);
         setShow(true);
       }
+
+      if (response.status === 400) {
+        const data = await response.json();
+        setToastState(data);
+        setShow(true);
+      }
     } catch (error) {
       alert(error);
     }

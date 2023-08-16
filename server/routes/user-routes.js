@@ -5,13 +5,7 @@ import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import { generateAdminUser, generateUser } from "../mocker.js";
 import User from "../models/user.js";
-import {
-  createUserValidator,
-  deleteUserValidator,
-  getUserValidator,
-  loginValidator,
-  updateUserValidator,
-} from "../validators/user-routes-validator.js";
+import { createUserValidator, deleteUserValidator, getUserValidator, updateUserValidator } from "../validators/user-routes-validator.js";
 
 // Criando uma instância do roteador
 const userRoutes = Router();
@@ -103,8 +97,12 @@ userRoutes.delete("/delete-users", async (req, res) => {
   }
 });
 
-userRoutes.post("/login", loginValidator, handleValidationErrors, async (req, res) => {
+userRoutes.post("/login", async (req, res) => {
   try {
+    if (!req.body.login || !req.body.password || req.body.login === "" || req.body.password === "") {
+      return res.status(400).json({ error: "Usuário e senha são obrigatórios!" });
+    }
+
     const user = await User.findOne({ where: { login: req.body.login } });
 
     if (!user) {
