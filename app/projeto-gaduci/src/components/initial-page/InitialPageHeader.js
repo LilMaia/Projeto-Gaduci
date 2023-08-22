@@ -8,6 +8,9 @@ import { FaSignInAlt } from "react-icons/fa";
 import { SessionStorageKey } from "../../enums/sessionStorage.enum.js";
 import { ENV_BASE_URL } from "../../enviroment/enviroments.js";
 import "../../styles/initial-page/InitialPageHeader.css";
+import ImpostoFederalContent from "../../components/initial-page/ImpostoFederalContent";
+import ImpostoEstadualContent from "../../components/initial-page/ImpostoEstadualContent";
+import ImpostoMunicipalContent from "../../components/initial-page/ImpostoMunicipalContent";
 
 const InitialPageHeader = () => {
   const [loggedIn, setLoggedIn] = useState(false); // Estado para controlar o login
@@ -15,6 +18,8 @@ const InitialPageHeader = () => {
   const [user, setUser] = useState({});
   const [show, setShow] = useState(false);
   const [toastData, setToastData] = useState({}); // Estado para controlar o toast
+  const [selectedService, setSelectedService] = useState(null);
+  const [userAdmin, setUserAdmin] = useState(false);
 
   useEffect(() => {
     const token = sessionStorage.getItem(SessionStorageKey.APP_STORAGE_KEY);
@@ -22,16 +27,24 @@ const InitialPageHeader = () => {
       verifyToken(token);
     }
   });
-
+  ///////////////////////////////////////////////////////////
+  const handleServiceSelect = (serviceName) => {
+    if (loggedIn) {
+      setSelectedService(serviceName);
+    } else {
+      setShowModal(true);
+    }
+  };
+  /////////////////////////////////////////////////////////
   const setUserState = (user) => {
     setUser(user);
+    setUserAdmin(user.role === "admin");
     showLoggedIn(user);
   };
-
+  //////////////////////////////////////////////////////////
   const setToastState = (data) => {
     setToastData(data);
   };
-
   ///////////////////////////////////////////////////////
   const openLoginModal = () => {
     setShowModal(true);
@@ -46,7 +59,11 @@ const InitialPageHeader = () => {
       <>
         <Navbar.Text className="logado-como">
           Logado como:{" "}
-          <a href="#abrirPerfil" className="privacy-link" onClick={handleProfile}>
+          <a
+            href="#abrirPerfil"
+            className="privacy-link"
+            onClick={handleProfile}
+          >
             {user ? user.name : ""}
           </a>
         </Navbar.Text>
@@ -71,7 +88,11 @@ const InitialPageHeader = () => {
           </a>
         </Navbar.Text>
         {showModal && (
-          <Modal show={showModal} onHide={closeLoginModal} style={{ position: "relative" }}>
+          <Modal
+            show={showModal}
+            onHide={closeLoginModal}
+            style={{ position: "relative" }}
+          >
             <Modal.Header closeButton onClick={closeLoginModal}>
               <Modal.Title>Entrar</Modal.Title>
             </Modal.Header>
@@ -79,10 +100,22 @@ const InitialPageHeader = () => {
               <Form.Group>
                 <Modal.Body>
                   <InputGroup className="mb-3">
-                    <Form.Control placeholder="Usuário" aria-label="Username" aria-describedby="basic-addon1" type="text" name="username" />
+                    <Form.Control
+                      placeholder="Usuário"
+                      aria-label="Username"
+                      aria-describedby="basic-addon1"
+                      type="text"
+                      name="username"
+                    />
                   </InputGroup>
                   <InputGroup>
-                    <Form.Control placeholder="Senha" aria-label="Password" aria-describedby="basic-addon2" type="password" name="password" />
+                    <Form.Control
+                      placeholder="Senha"
+                      aria-label="Password"
+                      aria-describedby="basic-addon2"
+                      type="password"
+                      name="password"
+                    />
                   </InputGroup>
                 </Modal.Body>
                 <Modal.Footer>
@@ -120,7 +153,9 @@ const InitialPageHeader = () => {
         const data = await response.json();
         sessionStorage.setItem(SessionStorageKey.APP_STORAGE_KEY, data.token); // Salve o token no armazenamento local
         setLoggedIn(true);
-        getUserData(sessionStorage.getItem(SessionStorageKey.APP_STORAGE_KEY)).then((user) => setUserState(user));
+        getUserData(
+          sessionStorage.getItem(SessionStorageKey.APP_STORAGE_KEY)
+        ).then((user) => setUserState(user));
         closeLoginModal();
       }
 
@@ -139,28 +174,41 @@ const InitialPageHeader = () => {
       alert(error);
     }
   };
-
-  const showToast = () => (
-    <div
-      className="toast-container"
-      style={{
-        position: "fixed",
-        top: "20px",
-        right: "20px",
-        zIndex: 1000, // Adjust as needed
-      }}
-    >
-      {show && (
-        <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide>
-          <Toast.Header>
-            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-            <strong className="me-auto">Erro</strong>
-          </Toast.Header>
-          <Toast.Body>{toastData.error}</Toast.Body>
-        </Toast>
-      )}
-    </div>
-  );
+  //////////////////////////////////////////////////////////////////////
+  const showToast = function (message = null) {
+    return (
+      <div
+        className="toast-container"
+        style={{
+          position: "fixed",
+          top: "20px",
+          right: "20px",
+          zIndex: 1000, // Adjust as needed
+        }}
+      >
+        {show && (
+          <Toast
+            onClose={() => setShow(false)}
+            show={show}
+            delay={3000}
+            autohide
+          >
+            <Toast.Header>
+              <img
+                src="holder.js/20x20?text=%20"
+                className="rounded me-2"
+                alt=""
+              />
+              <strong className="me-auto">Erro</strong>
+            </Toast.Header>
+            <Toast.Body>
+              {message != null ? message : toastData.error}
+            </Toast.Body>
+          </Toast>
+        )}
+      </div>
+    );
+  };
   /////////////////////////////////////////////////////////////////
 
   const verifyToken = async (token) => {
@@ -178,7 +226,9 @@ const InitialPageHeader = () => {
         if (data.token === token) {
           setLoggedIn(true);
           closeLoginModal();
-          getUserData(sessionStorage.getItem(SessionStorageKey.APP_STORAGE_KEY)).then((user) => setUserState(user));
+          getUserData(
+            sessionStorage.getItem(SessionStorageKey.APP_STORAGE_KEY)
+          ).then((user) => setUserState(user));
           return true;
         } else {
           setLoggedIn(false);
@@ -217,6 +267,7 @@ const InitialPageHeader = () => {
   const handleLogout = () => {
     sessionStorage.removeItem(SessionStorageKey.APP_STORAGE_KEY);
     setLoggedIn(false);
+    window.location.href = "/";
   };
   //////////////////////////////////////////////////////////////////////
 
@@ -226,25 +277,78 @@ const InitialPageHeader = () => {
 
   //////////////////////////////////////////////////////////////////////
   return (
-    <Navbar expand="lg" className="navbar">
-      <Container className="container">
-        <Navbar.Brand href="#home">
-          <img src="logo.png" alt="GaduciTax" className="header-logo" width={200} />
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav" className="ml-auto">
-          <Nav className="me-auto">
-            <NavDropdown title="Serviços" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Tributação Federal</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Tributação Estadual</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Tributação Municipal</NavDropdown.Item>
-            </NavDropdown>
-            <Nav.Link href="#">Sobre</Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
-        <Navbar.Collapse className="justify-content-end login-navbar">{loggedIn ? showLoggedIn(user) : showLoggedOut(handleLogin)}</Navbar.Collapse>
-      </Container>
-    </Navbar>
+    <>
+      <Navbar expand="lg" className="navbar">
+        <Container className="container">
+          <Navbar.Brand href="#home">
+            <img
+              src="logo.png"
+              alt="GaduciTax"
+              className="header-logo"
+              width={200}
+            />
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav" className="ml-auto">
+            <Nav className="me-auto">
+              <NavDropdown title="Serviços" id="basic-nav-dropdown">
+                {" "}
+                <NavDropdown.Item
+                  onClick={() => handleServiceSelect("federal")}
+                >
+                  Tributação federal
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  onClick={() => handleServiceSelect("estadual")}
+                >
+                  Tributação estadual
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  onClick={() => handleServiceSelect("municipal")}
+                >
+                  Tributação municipal
+                </NavDropdown.Item>
+              </NavDropdown>
+              <Nav.Link href="#">Sobre</Nav.Link>
+              {userAdmin && (
+                <NavDropdown
+                  title="Administracao"
+                  id="administration-nav-dropdown"
+                >
+                  <NavDropdown.Item
+                    onClick={() => handleServiceSelect("federal")}
+                  >
+                    Carregar Excel
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={() => handleServiceSelect("estadual")}
+                  >
+                    Editar Dados
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={() => handleServiceSelect("municipal")}
+                  >
+                    Deletar Dados
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={() => handleServiceSelect("municipal")}
+                  >
+                    Adicionar Dados
+                  </NavDropdown.Item>
+                </NavDropdown>
+              )}
+            </Nav>
+          </Navbar.Collapse>
+          <Navbar.Collapse className="justify-content-end login-navbar">
+            {loggedIn ? showLoggedIn(user) : showLoggedOut(handleLogin)}
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
+      {selectedService === "federal" && <ImpostoFederalContent />}
+      {selectedService === "estadual" && <ImpostoEstadualContent />}
+      {selectedService === "municipal" && <ImpostoMunicipalContent />}
+    </>
   );
 };
 

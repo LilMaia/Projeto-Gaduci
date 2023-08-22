@@ -5,6 +5,8 @@ import { PORT } from "./config/config.js";
 import sequelize from "./db.js";
 import userRoutes from "./routes/user-routes.js";
 import tokenRoutes from "./routes/token-routes.js"
+import tributacaoMunicipalRoutes from "./routes/tributacao-municipal-routes.js";
+
 // Criando uma instância do aplicativo Express
 const app = express();
 
@@ -36,7 +38,7 @@ app.use((req, res, next) => {
 });
 
 // Middleware: Configurando as rotas do aplicativo, agrupadas no módulo routes
-app.use(userRoutes,tokenRoutes);
+app.use(userRoutes,tokenRoutes, tributacaoMunicipalRoutes);
 
 // Iniciando o servidor para escutar na porta especificada
 app.listen(PORT, (err) => {

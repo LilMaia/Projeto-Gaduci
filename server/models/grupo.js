@@ -1,62 +1,53 @@
 import moment from "moment";
 import sequelize from "../db.js";
 import { DATE, INTEGER, STRING } from "sequelize";
-import bcrypt from "bcrypt";
+import Atividade from "./atividade.js"; 
 
-const User = sequelize.define("user", {
+const Grupo = sequelize.define("grupo", {
 
-  id: {
+  grupoId: {
     type: INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
 
-  name: {
+  codEstadoIbge: {
+    type: INTEGER,
+    allowNull: false,
+    unique: false,
+  },
+
+  estado: {
     type: STRING,
     allowNull: false,
     unique: false,
   },
 
-  cpf:{
+  abreviacaoEstado: {
     type: STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
   },
 
-  phone: {
+  codMunicipioIbge: {
+    type: INTEGER,
+    allowNull: false,
+    unique: false,
+  },
+
+  municipio: {
     type: STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
   },
 
-  email: {
+  nomeDoGrupo:{
     type: STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
   },
-
-   login: {
-    type: STRING,
-    allowNull: false,
-    unique: true,
-  },
-
-  password: {
-    type: STRING,
-    allowNull: false,
-    set: function (value) {
-      const saltRounds = 10; // Número de salt rounds para o bcrypt
-      const hashedPassword = bcrypt.hashSync(value, saltRounds);
-      this.setDataValue("password", hashedPassword);
-    },
-  },
-
-  role: {
-    type: STRING,
-    allowNull: false,
-  },
-
+  
   createdAt: {
     type: DATE,
     allowNull: false,
@@ -75,10 +66,10 @@ const User = sequelize.define("user", {
     },
   },
 
-  token: {
-    type: STRING,
-    allowNull: true,
-  },
 });
 
-export default User;
+// Establish a one-to-many relationship between Grupo and Atividade
+Grupo.hasMany(Atividade, { foreignKey: "grupoId" }); // Assuming "grupoId" is the foreign key in the Atividade table
+Atividade.belongsTo(Grupo, { foreignKey: "grupoId" });// Define the association to the Grupo model
+
+export default Grupo;

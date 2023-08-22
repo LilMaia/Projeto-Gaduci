@@ -1,60 +1,39 @@
 import moment from "moment";
 import sequelize from "../db.js";
 import { DATE, INTEGER, STRING } from "sequelize";
-import bcrypt from "bcrypt";
 
-const User = sequelize.define("user", {
+const Atividade = sequelize.define("atividade", {
 
-  id: {
+  atividadeId: {
     type: INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
 
-  name: {
+  //Código do serviço é o ID Nacional e a classificação é o ID municipal
+  codigoDoServico: {
+    type: INTEGER,
+    allowNull: false,
+    unique: false,
+  },
+
+  classificacao: {
     type: STRING,
     allowNull: false,
     unique: false,
   },
 
-  cpf:{
+  nomeAtividade: {
     type: STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
   },
 
-  phone: {
+  aliquotaISS:{
     type: STRING,
     allowNull: false,
-    unique: true,
-  },
-
-  email: {
-    type: STRING,
-    allowNull: false,
-    unique: true,
-  },
-
-   login: {
-    type: STRING,
-    allowNull: false,
-    unique: true,
-  },
-
-  password: {
-    type: STRING,
-    allowNull: false,
-    set: function (value) {
-      const saltRounds = 10; // Número de salt rounds para o bcrypt
-      const hashedPassword = bcrypt.hashSync(value, saltRounds);
-      this.setDataValue("password", hashedPassword);
-    },
-  },
-
-  role: {
-    type: STRING,
-    allowNull: false,
+    unique: false,
   },
 
   createdAt: {
@@ -75,10 +54,6 @@ const User = sequelize.define("user", {
     },
   },
 
-  token: {
-    type: STRING,
-    allowNull: true,
-  },
 });
 
-export default User;
+export default Atividade;
