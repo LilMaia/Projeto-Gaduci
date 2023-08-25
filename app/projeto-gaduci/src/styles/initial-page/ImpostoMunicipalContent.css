@@ -5,3 +5,26 @@
   .city-select{
     z-index: 10;
   }
+
+  /* Styles for the result column */
+.result-column {
+  overflow-y: auto;
+}
+
+/* Styles for each result card */
+.result-card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for the activity list */
+.activity-list {
+  margin-top: 10px;
+}
+
+/* Styles for each activity item */
+.activity-item {
+  background-color: #f8f9fa;
+  border: none;
+}

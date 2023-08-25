@@ -18,6 +18,77 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
+tributacaoMunicipalRoutes.get("/city-select-options", async (req, res) => {
+  try {
+    const cidades = await Grupo.findAll({
+      attributes: ["municipio"],
+      group: ["municipio"],
+    });
+    const citySelectOptions = cidades.map((cidade) => {
+      return { value: cidade.municipio, label: cidade.municipio };
+    });
+    res.status(200).json(citySelectOptions);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+tributacaoMunicipalRoutes.get("/ultimos-grupos", async (req, res) => {
+  try {
+    const grupos = await Grupo.findAll({
+      limit: 5,
+      order: [["createdAt", "DESC"]],
+    });
+    res.status(200).json(grupos);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+tributacaoMunicipalRoutes.get("/ultimos-atividades", async (req, res) => {
+  try {
+    const atividades = await Atividade.findAll({
+      limit: 5,
+      order: [["createdAt", "DESC"]],
+    });
+    res.status(200).json(atividades);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+tributacaoMunicipalRoutes.delete("/delete-grupo/:grupoId", async (req, res) => {
+  try {
+    const grupoId = req.params.grupoId;
+    const grupo = await Grupo.findByPk(grupoId);
+
+    if (!grupo) {
+      return res.status(400).json({ message: "Grupo não encontrado" });
+    }
+
+    await grupo.destroy();
+    res.status(200).json({ message: "Grupo excluído com sucesso" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+tributacaoMunicipalRoutes.delete("/delete-atividade/:atividadeId", async (req, res) => {
+  try {
+    const atividadeId = req.params.atividadeId;
+    const atividade = await Atividade.findByPk(atividadeId);
+
+    if (!atividade) {
+      return res.status(400).json({ message: "Atividade não encontrada" });
+    }
+
+    await atividade.destroy();
+    res.status(200).json({ message: "Atividade excluída com sucesso" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 tributacaoMunicipalRoutes.put("/update-grupo/:grupoId", async (req, res) => {
   try {
     const grupoId = req.params.grupoId;
@@ -43,8 +114,18 @@ tributacaoMunicipalRoutes.put("/update-atividade/:atividadeId", async (req, res)
       return res.status(400).json({ message: "Atividade não encontrada" });
     }
 
-    const atividadeAtualizada = await atividade.update(req.body);
-    res.status(200).json(atividadeAtualizada);
+    try {
+      // Tenta atualizar a atividade
+      const atividadeAtualizada = await atividade.update(req.body);
+      res.status(200).json(atividadeAtualizada);
+    } catch (validationError) {
+      // Se ocorrer um erro de validação, captura os detalhes do erro
+      const errorDetails = validationError.errors.map(error => ({
+        field: error.path,
+        message: error.message
+      }));
+      res.status(400).json({ validationErrors: errorDetails });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -29,3 +29,15 @@
 .logo {
     margin-bottom: -75px !important; 
 }
+
+/* Estilos para fixar o footer no fundo */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  /* Estilo opcional para espaçar o conteúdo acima do footer */
+  .main-content {
+    margin-bottom: 60px; /* Ajuste conforme necessário */
+  }

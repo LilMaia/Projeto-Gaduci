@@ -4,7 +4,7 @@ import { FaFacebook, FaLinkedin, FaInstagram, FaYoutube } from "react-icons/fa";
 
 function InitialPageFooter() {
   return (
-    <footer className="bg-dark text-white py-1 fixed-bottom">
+    <footer className="bg-dark text-white py-1">
       <Container className="container">
         <Row className="justify-content-center">
           <Col className="politica-col">

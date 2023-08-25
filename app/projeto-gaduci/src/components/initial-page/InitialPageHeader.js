@@ -11,6 +11,10 @@ import "../../styles/initial-page/InitialPageHeader.css";
 import ImpostoFederalContent from "../../components/initial-page/ImpostoFederalContent";
 import ImpostoEstadualContent from "../../components/initial-page/ImpostoEstadualContent";
 import ImpostoMunicipalContent from "../../components/initial-page/ImpostoMunicipalContent";
+import AdicionarContent from "../../components/initial-page/AdicionarContent";
+import EditarContent from "../../components/initial-page/EditarContent";
+import DeletarContent from "../../components/initial-page/DeletarContent";
+import ExcelContent from "../../components/initial-page/ExcelContent";
 
 const InitialPageHeader = () => {
   const [loggedIn, setLoggedIn] = useState(false); // Estado para controlar o login
@@ -19,6 +23,7 @@ const InitialPageHeader = () => {
   const [show, setShow] = useState(false);
   const [toastData, setToastData] = useState({}); // Estado para controlar o toast
   const [selectedService, setSelectedService] = useState(null);
+  const [adminSelect, setAdminSelect] = useState(null);
   const [userAdmin, setUserAdmin] = useState(false);
 
   useEffect(() => {
@@ -30,11 +35,17 @@ const InitialPageHeader = () => {
   ///////////////////////////////////////////////////////////
   const handleServiceSelect = (serviceName) => {
     if (loggedIn) {
+      setAdminSelect(null);
       setSelectedService(serviceName);
     } else {
       setShowModal(true);
     }
   };
+  ///////////////////////////////////////////////////////////
+  const handleAdminSelect = (adminService) => {
+    setSelectedService(null)
+      setAdminSelect(adminService);
+    };
   /////////////////////////////////////////////////////////
   const setUserState = (user) => {
     setUser(user);
@@ -316,22 +327,22 @@ const InitialPageHeader = () => {
                   id="administration-nav-dropdown"
                 >
                   <NavDropdown.Item
-                    onClick={() => handleServiceSelect("federal")}
+                    onClick={() => handleAdminSelect("excel")}
                   >
                     Carregar Excel
                   </NavDropdown.Item>
                   <NavDropdown.Item
-                    onClick={() => handleServiceSelect("estadual")}
+                    onClick={() => handleAdminSelect("editar")}
                   >
                     Editar Dados
                   </NavDropdown.Item>
                   <NavDropdown.Item
-                    onClick={() => handleServiceSelect("municipal")}
+                    onClick={() => handleAdminSelect("deletar")}
                   >
                     Deletar Dados
                   </NavDropdown.Item>
                   <NavDropdown.Item
-                    onClick={() => handleServiceSelect("municipal")}
+                    onClick={() => handleAdminSelect("adicionar")}
                   >
                     Adicionar Dados
                   </NavDropdown.Item>
@@ -348,6 +359,10 @@ const InitialPageHeader = () => {
       {selectedService === "federal" && <ImpostoFederalContent />}
       {selectedService === "estadual" && <ImpostoEstadualContent />}
       {selectedService === "municipal" && <ImpostoMunicipalContent />}
+      {adminSelect === "excel" && <ExcelContent />}
+      {adminSelect === "editar" && <EditarContent />}
+      {adminSelect === "deletar" && <DeletarContent />}
+      {adminSelect === "adicionar" && <AdicionarContent/>}
     </>
   );
 };

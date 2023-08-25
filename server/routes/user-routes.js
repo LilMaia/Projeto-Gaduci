@@ -45,9 +45,9 @@ userRoutes.get("/get-user/:id", getUserValidator, handleValidationErrors, async 
   }
 });
 
-userRoutes.put("/update-user", updateUserValidator, handleValidationErrors, async (req, res) => {
+userRoutes.put("/update-user/:id", updateUserValidator, handleValidationErrors, async (req, res) => {
   try {
-    const user = await User.findByPk(req.body.id);
+    const user = await User.findByPk(req.params.id);
     await user.update(req.body);
     res.status(200).json(user);
   } catch (error) {
