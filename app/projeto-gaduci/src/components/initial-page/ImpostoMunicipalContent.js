@@ -39,6 +39,7 @@ const SearchBar = () => {
   const handleCityChange = (selectedOption) => {
     setSelectedCity(selectedOption);
   };
+  
   const handleSearch = async (event) => {
     event.preventDefault();
 

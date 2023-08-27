@@ -48,7 +48,7 @@ const SearchBar = () => {
   };
 
   return (
-    <Container>
+    <Container style={{ marginBottom: "100px" }}>
       <Row className="justify-content-center mt-5">
         <Col md={8}>
           <h1 className="text-center">Tributação Federal</h1>

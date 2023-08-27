@@ -4,20 +4,23 @@ import {
   Button,
   Container,
   Row,
+  Modal,
   Col,
   InputGroup,
   Card,
+  Table,
 } from "react-bootstrap";
 import Select from "react-select";
 import "../../styles/initial-page/DeletarContent.css";
 import { ENV_BASE_URL } from "../../enviroment/enviroments.js";
 
-
 const DeleteContent = () => {
   const [searchResult, setSearchResult] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null); // State to store the selected city
   const [cityOptions, setCityOptions] = useState([]); // State to store the city options
-  const [selectedOption, setSelectedOption] = useState("group"); // Default to "group"
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     async function fetchCities() {
@@ -37,28 +40,56 @@ const DeleteContent = () => {
     fetchCities();
   }, []);
 
-  const handleDelete = () => {
-    // Perform the delete logic here for the selected group/activity
-    // Update the state or perform any necessary API calls
-    // Clear the search result by setting setSearchResult(null)
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalMessage("");
+    fetchSearchResults(selectedCity.value, inputValue);
+    // window.location.reload(false); // Recarregar a mesma página sem alterar localização
+  };
+
+  const handleDelete = async (type, id) => {
+    try {
+      const response = await fetch(`${ENV_BASE_URL}/delete-${type}/${id}`, {
+        method: "DELETE",
+      });
+      const message = await response.json();
+      setShowModal(true);
+      setModalMessage(message.message);
+    } catch (error) {
+      setShowModal(true);
+      setModalMessage("Erro ao deletar:", error);
+    }
   };
 
   const handleCityChange = (selectedOption) => {
     setSelectedCity(selectedOption);
   };
 
+  const fetchSearchResults = async (cityValue, inputValue) => {
+    try {
+      const response = await fetch(
+        `${ENV_BASE_URL}/search-by-nome-or-atividade/${cityValue}/${inputValue}`
+      );
+      const searchResults = await response.json();
+      setSearchResult(searchResults);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+
   const handleSearch = async (event) => {
-    event.preventDefault(); // Prevent form submission
+    event.preventDefault();
 
     const inputValue = event.target.codigoPesquisa.value;
+    setInputValue(inputValue);
 
     if (inputValue && selectedCity) {
-      // Perform your search logic here
+      fetchSearchResults(selectedCity.value, inputValue);
     }
   };
 
   return (
-    <Container>
+    <Container style={{ marginBottom: "100px" }}>
       <Row className="justify-content-center mt-5">
         <Col md={8}>
           <h1 className="text-center">Deletar dados</h1>
@@ -78,28 +109,6 @@ const DeleteContent = () => {
         </Col>
       </Row>
       <Row className="justify-content-center mt-3">
-        {" "}
-        {/* Add spacing */}
-        <Row className="justify-content-center mt-3 mb-4">
-        <Col md={6} className="radio-button-container">
-          <Form.Check
-            type="radio"
-            name="option"
-            value="group"
-            label="Grupo"
-            checked={selectedOption === "group"}
-            onChange={() => setSelectedOption("group")}
-          />
-          <Form.Check
-            type="radio"
-            name="option"
-            value="activity"
-            label="Atividade"
-            checked={selectedOption === "activity"}
-            onChange={() => setSelectedOption("activity")}
-          />
-        </Col>
-      </Row>
         <Col md={6} className="search-button-container">
           <Form onSubmit={handleSearch}>
             <Form.Group controlId="codigoPesquisa">
@@ -127,33 +136,118 @@ const DeleteContent = () => {
       </Row>
       {searchResult && (
         <Row className="justify-content-center mt-3">
-          <Col md={8}>
+          <Col md={8} className="result-column">
             <h2 className="display-4 text-center mt-4 mb-3">
               Resultados da Pesquisa
             </h2>
-            <Card>
-              <Card.Body>
-                <Card.Text>
-                  <strong>Código:</strong> {searchResult.code}
-                </Card.Text>
-                <Card.Text>
-                  <strong>Descrição:</strong> {searchResult.description}
-                  <br />
-                  <strong>Descrição completa:</strong>{" "}
-                  {searchResult.full_description}
-                </Card.Text>
-              </Card.Body>
-            </Card>
-            <Button
-              variant="danger"
-              className="delete-button"
-              onClick={handleDelete}
-            >
-              Deletar {selectedOption === "group" ? "Grupo" : "Atividade"}
-            </Button>
+            {searchResult.map((result, index) => (
+              <Card key={index} className="result-card mb-3">
+                <Card.Body>
+                  <div className="group-info">
+                    <Table striped bordered>
+                      <tbody>
+                        <tr>
+                          <th>Código Estado IBGE:</th>
+                          <td>{result.codEstadoIbge}</td>
+                        </tr>
+                        <tr>
+                          <th>Estado:</th>
+                          <td>{result.estado}</td>
+                        </tr>
+                        <tr>
+                          <th>Código Município IBGE:</th>
+                          <td>{result.codMunicipioIbge}</td>
+                        </tr>
+                        <tr>
+                          <th>Município:</th>
+                          <td>{result.municipio}</td>
+                        </tr>
+                        <tr>
+                          <th>Nome do Grupo:</th>
+                          <td>{result.nomeDoGrupo}</td>
+                        </tr>
+                        <tr className="text-center-horizontal">
+                          {" "}
+                          {/* Adicione a classe aqui */}
+                          <td colSpan="2">
+                            <div className="button-container mt-4 mb-4">
+                              <Button
+                                variant="danger"
+                                onClick={() =>
+                                  handleDelete("grupo", result.grupoId)
+                                }
+                              >
+                                Deletar
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </Table>
+                  </div>
+                  {result.atividades.length > 0 && (
+                    <div className="activity-table">
+                      <h5 className="activity-titlemb-3">Atividades:</h5>
+                      <table className="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Nome da Atividade</th>
+                            <th>Código do Serviço</th>
+                            <th>Classificação</th>
+                            <th>Alíquota ISS</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {result.atividades.map(
+                            (atividade, atividadeIndex) => (
+                              <tr key={atividadeIndex}>
+                                <td>{atividade.nomeAtividade}</td>
+                                <td>{atividade.codigoDoServico}</td>
+                                <td>{atividade.classificacao}</td>
+                                <td>{atividade.aliquotaISS}</td>
+                                <td>
+                                  <Button
+                                    variant="danger"
+                                    onClick={() =>
+                                      handleDelete(
+                                        "atividade",
+                                        atividade.atividadeId
+                                      )
+                                    }
+                                  >
+                                    Deletar
+                                  </Button>
+                                </td>
+                              </tr>
+                            )
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </Card.Body>
+              </Card>
+            ))}
           </Col>
         </Row>
       )}
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton={false}>
+          <Modal.Title>Operação Concluída</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">{modalMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCloseModal}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

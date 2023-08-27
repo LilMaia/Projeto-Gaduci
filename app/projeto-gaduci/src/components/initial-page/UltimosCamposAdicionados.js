@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Table } from "react-bootstrap";
 import { ENV_BASE_URL } from "../../enviroment/enviroments.js";
 
 function UltimosCamposAdicionados({ tipo }) {
@@ -9,7 +9,7 @@ function UltimosCamposAdicionados({ tipo }) {
     async function fetchUltimosCampos() {
       try {
         const response = await fetch(
-          ENV_BASE_URL + `/ultimos-${tipo}` // Substitua pelo endpoint correto da API
+          ENV_BASE_URL + `/ultimos-${tipo}` 
         );
         const data = await response.json();
         setUltimosCampos(data);
@@ -22,42 +22,31 @@ function UltimosCamposAdicionados({ tipo }) {
   }, [tipo]);
 
   return (
-<Card style={{ marginTop: "115px"}}>
-  <Card.Body>
-    <Card.Title className="mb-3">
-      {tipo === "grupos"
-        ? "Últimos Grupos Adicionados :"
-        : "Últimas Atividades Adicionadas :"}
-    </Card.Title>
-    <ul className="list-unstyled">
-      {ultimosCampos.map((campo, index) => (
-        <li
-          key={index}
-          className="mb-2"
-          style={{
-            padding: "5px 0",
-            position: "relative",
-          }}
-        >
-          <span
-            className="badge badge-custom"
-            style={{
-              position: "absolute",
-              left: "-15px",
-              top: "7px",
-              color: "#007bff",
-              fontSize: "14px",
-            }}
-          >
-            &bull;
-          </span>
-          {campo.nomeDoGrupo || campo.nomeAtividade}
-        </li>
-      ))}
-    </ul>
-  </Card.Body>
-</Card>
-
+    <Card style={{ marginTop: "115px" }}>
+      <Card.Body>
+        <Card.Title className="mb-3">
+          {tipo === "grupos"
+            ? "Últimos Grupos Adicionados :"
+            : "Últimas Atividades Adicionadas :"}
+        </Card.Title>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nome</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ultimosCampos.map((campo, index) => (
+              <tr key={index}>
+                <td>{campo.grupoId || campo.atividadeId}</td>
+                <td>{campo.nomeDoGrupo || campo.nomeAtividade}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Card.Body>
+    </Card>
   );
 }
 

@@ -107,16 +107,26 @@ function AdicionarGrupoAtividade() {
   };
 
   return (
-    <Container className="py-5">
+    <Container className="py-5" style={{ marginBottom: "100px" }}>
       <Row>
         <Col md={12}>
           <h2 className="mb-4">Selecione o tipo</h2>
           <Form.Group>
             {/* <Form.Label>Selecione o tipo:</Form.Label> */}
-            <Form.Control as="select" onChange={handleTipoChange} className="custom-select custom-select-sm mx-auto">
-              <option value="" className="text-center">Escolha uma opção</option>
-              <option value="grupo" className="text-center">Grupo</option>
-              <option value="atividade" className="text-center">Atividade</option>
+            <Form.Control
+              as="select"
+              onChange={handleTipoChange}
+              className="custom-select custom-select-sm mx-auto"
+            >
+              <option value="" className="text-center">
+                Escolha uma opção
+              </option>
+              <option value="grupo" className="text-center">
+                Grupo
+              </option>
+              <option value="atividade" className="text-center">
+                Atividade
+              </option>
             </Form.Control>
           </Form.Group>
         </Col>
@@ -195,8 +205,9 @@ function AdicionarGrupoAtividade() {
               </Form.Group>
             </Form>
           </Col>
-          <Col md={6} className="mx-auto"  style={{ maxWidth: "600px" }}>
-            <UltimosCamposAdicionados tipo="grupos"/> {/* Renderize o componente aqui para grupos */}
+          <Col md={6} className="mx-auto" style={{ maxWidth: "600px" }}>
+            <UltimosCamposAdicionados tipo="grupos" />{" "}
+            {/* Renderize o componente aqui para grupos */}
           </Col>
         </Row>
       )}
@@ -263,18 +274,26 @@ function AdicionarGrupoAtividade() {
               </Form.Group>
             </Form>
           </Col>
-          <Col md={6} className="mx-auto"  style={{ maxWidth: "600px" }}>
-            <UltimosCamposAdicionados tipo="atividades" /> {/* Renderize o componente aqui para grupos */}
+          <Col md={6} className="mx-auto" style={{ maxWidth: "600px" }}>
+            <UltimosCamposAdicionados tipo="atividades" />{" "}
+            {/* Renderize o componente aqui para grupos */}
           </Col>
         </Row>
       )}
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton={false}>
           <Modal.Title>Operação Concluída</Modal.Title>
         </Modal.Header>
-        <Modal.Body>{modalMessage}</Modal.Body>
+        <Modal.Body className="text-center">
+          {modalMessage}
+        </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="primary" onClick={handleCloseModal}>
             Fechar
           </Button>
         </Modal.Footer>

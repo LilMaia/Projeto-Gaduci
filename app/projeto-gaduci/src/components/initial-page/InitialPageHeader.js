@@ -182,7 +182,7 @@ const InitialPageHeader = () => {
         setShow(true);
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
   //////////////////////////////////////////////////////////////////////
@@ -249,7 +249,7 @@ const InitialPageHeader = () => {
         }
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
@@ -271,7 +271,7 @@ const InitialPageHeader = () => {
         return data;
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
   //////////////////////////////////////////////////////////////////////
@@ -309,11 +309,11 @@ const InitialPageHeader = () => {
                 >
                   Tributação federal
                 </NavDropdown.Item>
-                <NavDropdown.Item
+                {/* <NavDropdown.Item
                   onClick={() => handleServiceSelect("estadual")}
                 >
                   Tributação estadual
-                </NavDropdown.Item>
+                </NavDropdown.Item> */}
                 <NavDropdown.Item
                   onClick={() => handleServiceSelect("municipal")}
                 >
