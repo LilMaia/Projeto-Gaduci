@@ -5,3 +5,12 @@
   .city-select{
     z-index: 10;
   }
+
+  .error-message {
+    color: red;
+    font-size: 20px;
+    font-style: negrito;
+    margin-top: 8px;
+  }
+  
+  

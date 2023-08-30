@@ -39,7 +39,7 @@ const SearchBar = () => {
   const handleCityChange = (selectedOption) => {
     setSelectedCity(selectedOption);
   };
-  
+
   const handleSearch = async (event) => {
     event.preventDefault();
 
@@ -107,41 +107,45 @@ const SearchBar = () => {
         </Col>
       </Row>
       <Container className="mb-4">
-      {searchResult && (
-        <Row className="justify-content-center mt-3">
-          <Col md={8} className="result-column">
-            <h2 className="display-4 text-center mt-4 mb-3">
-              Resultados da Pesquisa
-            </h2>
-            {searchResult.map((result, index) => (
-              <Card key={index} className="result-card mb-3">
-                <Card.Body>
-                  <div className="group-info">
-                    <Table striped bordered>
-                      <tbody>
-                        <tr>
-                          <th>Código Estado IBGE:</th>
-                          <td>{result.codEstadoIbge}</td>
-                        </tr>
-                        <tr>
-                          <th>Estado:</th>
-                          <td>{result.estado}</td>
-                        </tr>
-                        <tr>
-                          <th>Código Município IBGE:</th>
-                          <td>{result.codMunicipioIbge}</td>
-                        </tr>
-                        <tr>
-                          <th>Município:</th>
-                          <td>{result.municipio}</td>
-                        </tr>
-                        <tr>
-                          <th>Nome do Grupo:</th>
-                          <td>{result.nomeDoGrupo}</td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </div>
+        {searchResult && (
+          <Row className="justify-content-center mt-3">
+            <Col md={8} className="result-column">
+              <h2 className="display-4 text-center mt-4 mb-3">
+                Resultados da Pesquisa
+              </h2>
+              {searchResult.map((result, index) => (
+                <Card key={index} className="result-card mb-3">
+                  <Card.Body>
+                    <div className="group-info">
+                      <Table striped bordered>
+                        <tbody>
+                          <tr>
+                            <th>Código Do Grupo:</th>
+                            <td>{result.grupoId}</td>
+                          </tr>
+                          <tr>
+                            <th>Código Estado IBGE:</th>
+                            <td>{result.codEstadoIbge}</td>
+                          </tr>
+                          <tr>
+                            <th>Estado:</th>
+                            <td>{result.estado}</td>
+                          </tr>
+                          <tr>
+                            <th>Código Município IBGE:</th>
+                            <td>{result.codMunicipioIbge}</td>
+                          </tr>
+                          <tr>
+                            <th>Município:</th>
+                            <td>{result.municipio}</td>
+                          </tr>
+                          <tr>
+                            <th>Nome do Grupo:</th>
+                            <td>{result.nomeDoGrupo}</td>
+                          </tr>
+                        </tbody>
+                      </Table>
+                    </div>
                     {result.atividades.length > 0 && (
                       <div className="activity-table">
                         <h5 className="activity-titlemb-3">Atividades:</h5>

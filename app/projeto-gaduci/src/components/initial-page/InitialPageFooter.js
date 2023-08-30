@@ -28,7 +28,7 @@ function InitialPageFooter() {
           </Col>
           <Col className="direitos-autorias-col">
             <p>
-              &copy; {new Date().getFullYear()} GaduciTax. Todos os direitos
+              &copy; {new Date().getFullYear()} GadugiTax. Todos os direitos
               reservados.
             </p>
           </Col>

@@ -8,6 +8,7 @@ function AdicionarGrupoAtividade() {
   const [showModal, setShowModal] = useState(false);
   const [tipoSelecionado, setTipoSelecionado] = useState(null);
   const [modalMessage, setModalMessage] = useState("");
+  const [ultimosCampos, setUltimosCampos] = useState([]);
 
   const [grupoData, setGrupoData] = useState({
     codEstadoIbge: "",
@@ -68,6 +69,7 @@ function AdicionarGrupoAtividade() {
 
       if (response.status === 201) {
         // Exibir a modal somente em caso de sucesso
+        setUltimosCampos((prevUltimosCampos) => [data, ...prevUltimosCampos]);
         setShowModal(true);
         setModalMessage("O grupo foi criado com sucesso.");
       } else {
@@ -95,6 +97,7 @@ function AdicionarGrupoAtividade() {
 
       if (response.status === 201) {
         // Exibir a modal somente em caso de sucesso
+        setUltimosCampos((prevUltimosCampos) => [data, ...prevUltimosCampos]);
         setShowModal(true);
         setModalMessage("A atividade foi criada com sucesso.");
       } else {
@@ -206,8 +209,11 @@ function AdicionarGrupoAtividade() {
             </Form>
           </Col>
           <Col md={6} className="mx-auto" style={{ maxWidth: "600px" }}>
-            <UltimosCamposAdicionados tipo="grupos" />{" "}
-            {/* Renderize o componente aqui para grupos */}
+            <UltimosCamposAdicionados
+              tipo="grupos"
+              ultimosCampos={ultimosCampos}
+              setUltimosCampos={setUltimosCampos}
+            />
           </Col>
         </Row>
       )}
@@ -275,8 +281,11 @@ function AdicionarGrupoAtividade() {
             </Form>
           </Col>
           <Col md={6} className="mx-auto" style={{ maxWidth: "600px" }}>
-            <UltimosCamposAdicionados tipo="atividades" />{" "}
-            {/* Renderize o componente aqui para grupos */}
+            <UltimosCamposAdicionados
+              tipo="atividades"
+              ultimosCampos={ultimosCampos}
+              setUltimosCampos={setUltimosCampos}
+            />
           </Col>
         </Row>
       )}
@@ -289,9 +298,7 @@ function AdicionarGrupoAtividade() {
         <Modal.Header closeButton={false}>
           <Modal.Title>Operação Concluída</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="text-center">
-          {modalMessage}
-        </Modal.Body>
+        <Modal.Body className="text-center">{modalMessage}</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleCloseModal}>
             Fechar

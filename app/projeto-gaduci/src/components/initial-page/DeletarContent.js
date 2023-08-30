@@ -18,9 +18,9 @@ const DeleteContent = () => {
   const [searchResult, setSearchResult] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null); // State to store the selected city
   const [cityOptions, setCityOptions] = useState([]); // State to store the city options
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   useEffect(() => {
     async function fetchCities() {
@@ -40,25 +40,22 @@ const DeleteContent = () => {
     fetchCities();
   }, []);
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setModalMessage("");
-    fetchSearchResults(selectedCity.value, inputValue);
-    // window.location.reload(false); // Recarregar a mesma página sem alterar localização
-  };
-
-  const handleDelete = async (type, id) => {
+  const confirmDelete = async () => {
     try {
-      const response = await fetch(`${ENV_BASE_URL}/delete-${type}/${id}`, {
+      const { type, id } = itemToDelete;
+      await fetch(`${ENV_BASE_URL}/delete-${type}/${id}`, {
         method: "DELETE",
       });
-      const message = await response.json();
-      setShowModal(true);
-      setModalMessage(message.message);
+      fetchSearchResults(selectedCity.value, inputValue);
+      setShowDeleteConfirmation(false);
     } catch (error) {
-      setShowModal(true);
-      setModalMessage("Erro ao deletar:", error);
+      setShowDeleteConfirmation(false);
     }
+  };
+
+  const handleDelete = (type, id) => {
+    setShowDeleteConfirmation(true);
+    setItemToDelete({ type, id });
   };
 
   const handleCityChange = (selectedOption) => {
@@ -147,6 +144,10 @@ const DeleteContent = () => {
                     <Table striped bordered>
                       <tbody>
                         <tr>
+                          <th>Código Do Grupo:</th>
+                          <td>{result.grupoId}</td>
+                        </tr>
+                        <tr>
                           <th>Código Estado IBGE:</th>
                           <td>{result.codEstadoIbge}</td>
                         </tr>
@@ -171,14 +172,21 @@ const DeleteContent = () => {
                           {/* Adicione a classe aqui */}
                           <td colSpan="2">
                             <div className="button-container mt-4 mb-4">
-                              <Button
-                                variant="danger"
-                                onClick={() =>
-                                  handleDelete("grupo", result.grupoId)
-                                }
-                              >
-                                Deletar
-                              </Button>
+                              {result.atividades.length > 0 ? (
+                                <p className="error-message">
+                                  Para poder deletar um grupo, é necessário
+                                  deletar suas atividades antes.
+                                </p>
+                              ) : (
+                                <Button
+                                  variant="danger"
+                                  onClick={() =>
+                                    handleDelete("grupo", result.grupoId)
+                                  }
+                                >
+                                  Deletar
+                                </Button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -233,18 +241,26 @@ const DeleteContent = () => {
         </Row>
       )}
       <Modal
-        show={showModal}
-        onHide={handleCloseModal}
+        show={showDeleteConfirmation}
+        onHide={() => setShowDeleteConfirmation(false)}
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton={false}>
-          <Modal.Title>Operação Concluída</Modal.Title>
+          <Modal.Title>Confirmar Exclusão</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="text-center">{modalMessage}</Modal.Body>
+        <Modal.Body className="text-center">
+          Tem certeza que deseja excluir este item?
+        </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleCloseModal}>
-            Fechar
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteConfirmation(false)}
+          >
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Confirmar
           </Button>
         </Modal.Footer>
       </Modal>

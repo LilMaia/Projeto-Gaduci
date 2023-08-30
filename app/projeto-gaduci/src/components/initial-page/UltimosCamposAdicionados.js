@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, Table } from "react-bootstrap";
 import { ENV_BASE_URL } from "../../enviroment/enviroments.js";
 
-function UltimosCamposAdicionados({ tipo }) {
-  const [ultimosCampos, setUltimosCampos] = useState([]);
+function UltimosCamposAdicionados({ tipo, ultimosCampos, setUltimosCampos }) {
 
   useEffect(() => {
     async function fetchUltimosCampos() {
@@ -12,14 +11,14 @@ function UltimosCamposAdicionados({ tipo }) {
           ENV_BASE_URL + `/ultimos-${tipo}` 
         );
         const data = await response.json();
-        setUltimosCampos(data);
+        setUltimosCampos(data); // Update the state in the parent component
       } catch (error) {
         console.error(error);
       }
     }
 
     fetchUltimosCampos();
-  }, [tipo]);
+  }, [tipo, setUltimosCampos]);
 
   return (
     <Card style={{ marginTop: "115px" }}>

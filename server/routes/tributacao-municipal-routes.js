@@ -18,6 +18,40 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
+tributacaoMunicipalRoutes.get("/group-by-city-and-name/:municipio/:nomeDoGrupo", async (req, res) => {
+  try {
+    const municipio = req.params.municipio;
+    const nomeDoGrupo = req.params.nomeDoGrupo;
+
+    // Consulta os grupos que correspondem ao município e ao nome do grupo
+    const grupos = await Grupo.findAll({
+      where: {
+        municipio: municipio,
+        nomeDoGrupo: nomeDoGrupo,
+      },
+      include: [
+        {
+          model: Atividade,
+          // attributes: [], // Evita trazer todas as colunas de Atividade
+        },
+      ],
+    });
+
+    // Remove a senha dos objetos do grupo
+    if (grupos) {
+      grupos.forEach((grupo) => {
+        delete grupo.dataValues.password;
+      });
+    }
+
+    // Envia a resposta com os grupos correspondentes
+    res.status(200).json(grupos);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 tributacaoMunicipalRoutes.get("/city-select-options", async (req, res) => {
   try {
     const cidades = await Grupo.findAll({
@@ -113,19 +147,9 @@ tributacaoMunicipalRoutes.put("/update-atividade/:atividadeId", async (req, res)
     if (!atividade) {
       return res.status(400).json({ message: "Atividade não encontrada" });
     }
-
-    try {
-      // Tenta atualizar a atividade
-      const atividadeAtualizada = await atividade.update(req.body);
-      res.status(200).json(atividadeAtualizada);
-    } catch (validationError) {
-      // Se ocorrer um erro de validação, captura os detalhes do erro
-      const errorDetails = validationError.errors.map(error => ({
-        field: error.path,
-        message: error.message
-      }));
-      res.status(400).json({ validationErrors: errorDetails });
-    }
+    
+    const atividadeAtualizada = await atividade.update(req.body);
+    res.status(200).json(atividadeAtualizada);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

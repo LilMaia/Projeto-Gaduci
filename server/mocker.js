@@ -7,8 +7,8 @@ export function generateUser(amount) {
   for (let i = 0; i < amount; i++) {
     users.push({
       name: faker.person.fullName(),
-      cpf: faker.phone.number('###.###.###-##'),
-      phone: faker.phone.number('(##) #####-####'),
+      cpf: faker.phone.number("###.###.###-##"),
+      phone: faker.phone.number("(##) #####-####"),
       email: faker.internet.email(),
       login: faker.internet.userName(),
       password: faker.internet.password(),
@@ -23,8 +23,8 @@ export function generateAdminUser() {
   let users = [];
   users.push({
     name: "admin",
-    cpf: faker.phone.number('###.###.###-##'),
-    phone: faker.phone.number('(##) #####-####'),
+    cpf: faker.phone.number("###.###.###-##"),
+    phone: faker.phone.number("(##) #####-####"),
     email: "admin@gmail.com",
     login: "admin",
     password: "admin",
@@ -51,11 +51,11 @@ export function generateGrupo(amount) {
   return grupos;
 }
 
-export function generateAtividade(amount,grupoId) {
+export function generateAtividade(amount, grupoId) {
   let atividades = [];
 
   for (let i = 0; i < amount; i++) {
-    atividades.push({ 
+    atividades.push({
       codigoDoServico: faker.datatype.number(),
       classificacao: faker.datatype.number(),
       nomeAtividade: faker.name.jobType(),

@@ -15,6 +15,7 @@ import AdicionarContent from "../../components/initial-page/AdicionarContent";
 import EditarContent from "../../components/initial-page/EditarContent";
 import DeletarContent from "../../components/initial-page/DeletarContent";
 import ExcelContent from "../../components/initial-page/ExcelContent";
+import RegistrationModal from "./RegistrationModal.js";
 
 const InitialPageHeader = () => {
   const [loggedIn, setLoggedIn] = useState(false); // Estado para controlar o login
@@ -25,6 +26,7 @@ const InitialPageHeader = () => {
   const [selectedService, setSelectedService] = useState(null);
   const [adminSelect, setAdminSelect] = useState(null);
   const [userAdmin, setUserAdmin] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   useEffect(() => {
     const token = sessionStorage.getItem(SessionStorageKey.APP_STORAGE_KEY);
@@ -32,6 +34,7 @@ const InitialPageHeader = () => {
       verifyToken(token);
     }
   });
+  ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   const handleServiceSelect = (serviceName) => {
     if (loggedIn) {
@@ -43,9 +46,13 @@ const InitialPageHeader = () => {
   };
   ///////////////////////////////////////////////////////////
   const handleAdminSelect = (adminService) => {
-    setSelectedService(null)
-      setAdminSelect(adminService);
-    };
+    setSelectedService(null);
+    setAdminSelect(adminService);
+  };
+  //////////////////////////////////////////////////////////
+  // const openRegisterModal = () => {
+  //   setShowRegisterModal(true);
+  // };
   /////////////////////////////////////////////////////////
   const setUserState = (user) => {
     setUser(user);
@@ -90,12 +97,19 @@ const InitialPageHeader = () => {
     );
   };
   ////////////////////////////////////////////////////////
-  const showLoggedOut = (handleLogin) => {
+  const showLoggedOut = () => {
     return (
       <>
         <Navbar.Text>
           <a href="#login" onClick={openLoginModal} className="privacy-link">
             Entrar
+          </a>
+          <a
+            href="#register"
+            onClick={() => setShowRegisterModal(true)} // Show the RegistrationModal
+            className="privacy-link ms-4"
+          >
+            Cadastrar
           </a>
         </Navbar.Text>
         {showModal && (
@@ -108,35 +122,33 @@ const InitialPageHeader = () => {
               <Modal.Title>Entrar</Modal.Title>
             </Modal.Header>
             <Form onSubmit={handleLogin}>
-              <Form.Group>
-                <Modal.Body>
-                  <InputGroup className="mb-3">
-                    <Form.Control
-                      placeholder="Usuário"
-                      aria-label="Username"
-                      aria-describedby="basic-addon1"
-                      type="text"
-                      name="username"
-                    />
-                  </InputGroup>
-                  <InputGroup>
-                    <Form.Control
-                      placeholder="Senha"
-                      aria-label="Password"
-                      aria-describedby="basic-addon2"
-                      type="password"
-                      name="password"
-                    />
-                  </InputGroup>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button type="submit" variant="primary">
-                    <FaSignInAlt /> Entrar
-                  </Button>
-                </Modal.Footer>
-              </Form.Group>
+              <Modal.Body>
+                <InputGroup className="mb-3">
+                  <Form.Control
+                    placeholder="Usuário"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                    type="text"
+                    name="username"
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <Form.Control
+                    placeholder="Senha"
+                    aria-label="Password"
+                    aria-describedby="basic-addon2"
+                    type="password"
+                    name="password"
+                  />
+                </InputGroup>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button type="submit" variant="primary">
+                  <FaSignInAlt /> Entrar
+                </Button>
+              </Modal.Footer>
             </Form>
-            {show && showToast()} {/* Include the toast */}
+            {showToast && showToast()} {/* Include the toast */}
           </Modal>
         )}
       </>
@@ -326,14 +338,10 @@ const InitialPageHeader = () => {
                   title="Administracao"
                   id="administration-nav-dropdown"
                 >
-                  <NavDropdown.Item
-                    onClick={() => handleAdminSelect("excel")}
-                  >
+                  <NavDropdown.Item onClick={() => handleAdminSelect("excel")}>
                     Carregar Excel
                   </NavDropdown.Item>
-                  <NavDropdown.Item
-                    onClick={() => handleAdminSelect("editar")}
-                  >
+                  <NavDropdown.Item onClick={() => handleAdminSelect("editar")}>
                     Editar Dados
                   </NavDropdown.Item>
                   <NavDropdown.Item
@@ -351,18 +359,21 @@ const InitialPageHeader = () => {
             </Nav>
           </Navbar.Collapse>
           <Navbar.Collapse className="justify-content-end login-navbar">
-            {loggedIn ? showLoggedIn(user) : showLoggedOut(handleLogin)}
+            {loggedIn ? showLoggedIn(user) : showLoggedOut()}
           </Navbar.Collapse>
         </Container>
       </Navbar>
-
+      <RegistrationModal
+        show={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+      />
       {selectedService === "federal" && <ImpostoFederalContent />}
       {selectedService === "estadual" && <ImpostoEstadualContent />}
       {selectedService === "municipal" && <ImpostoMunicipalContent />}
       {adminSelect === "excel" && <ExcelContent />}
       {adminSelect === "editar" && <EditarContent />}
       {adminSelect === "deletar" && <DeletarContent />}
-      {adminSelect === "adicionar" && <AdicionarContent/>}
+      {adminSelect === "adicionar" && <AdicionarContent />}
     </>
   );
 };
