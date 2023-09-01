@@ -67,20 +67,19 @@ const ExcelUploadComponent = () => {
                     }
                   );
                   const newGroupData = await newGroupResponse.json();
-                  groupID = newGroupData.id;
+                  groupID = newGroupData.grupoId;
                 } else {
-                  groupID = existingGroupData[0].id;
+                  groupID = existingGroupData[0].grupoId;
                 }
 
                 currentGroupID = groupID;
                 // Exibir modal de sucesso
               } catch (error) {
-                setModalMessage("Erro ao buscar ou criar grupo:" + error);
-                setModalVisible(true);
+                console.log("Erro ao buscar ou criar grupo:" + error);
+                console.log(true);
               }
             }
-
-            // Associe a atividade ao grupo
+            // Associa a atividade ao grupo
             if (
               currentGroupID &&
               codigoDoServico &&
@@ -103,16 +102,16 @@ const ExcelUploadComponent = () => {
                   }),
                 });
                 // Exibir modal de sucesso
-                setModalMessage("Upload bem-sucedido!");
-                setModalVisible(true);
+                console.log("Upload bem-sucedido!");
               } catch (error) {
-                setModalMessage("Erro ao criar atividade:" + error);
-                setModalVisible(true);
+                console.log("Erro ao criar atividade:" + error);
               }
             }
           }
         };
         reader.readAsArrayBuffer(file);
+        setModalMessage("Tabela carregada no banco com sucesso!");
+        setModalVisible(true);
       } catch (error) {
         setModalMessage("Erro ao ler o arquivo Excel:" + error);
         setModalVisible(true);
@@ -129,8 +128,8 @@ const ExcelUploadComponent = () => {
       <h2>Fazer Upload de Excel</h2>
       <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
 
-      <Modal show={modalVisible} onHide={closeModal}>
-        <Modal.Header closeButton>
+      <Modal show={modalVisible}>
+        <Modal.Header>
           <Modal.Title>Status do Upload</Modal.Title>
         </Modal.Header>
         <Modal.Body>{modalMessage}</Modal.Body>

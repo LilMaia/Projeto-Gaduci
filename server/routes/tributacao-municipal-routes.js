@@ -209,6 +209,18 @@ tributacaoMunicipalRoutes.post("/create-atividade", async (req, res) => {
       return res.status(400).json({ message: "Grupo não encontrado" });
     }
 
+    // Check if an activity with the same nomeAtividade and grupoId already exists
+    const existingActivity = await Atividade.findOne({
+      where: {
+        nomeAtividade: req.body.nomeAtividade,
+        grupoId: grupoId,
+      },
+    });
+
+    if (existingActivity) {
+      return res.status(400).json({ message: "Atividade com mesmo nome já existe" });
+    }
+
     const atividadeData = {
       codigoDoServico: req.body.codigoDoServico,
       classificacao: req.body.classificacao,
