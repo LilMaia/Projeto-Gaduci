@@ -16,6 +16,7 @@ import EditarContent from "../../components/initial-page/EditarContent";
 import DeletarContent from "../../components/initial-page/DeletarContent";
 import ExcelContent from "../../components/initial-page/ExcelContent";
 import RegistrationModal from "./RegistrationModal.js";
+import ChangeUserRoleContent from "./ChangeUserRoleContent.js";
 
 const InitialPageHeader = () => {
   const [loggedIn, setLoggedIn] = useState(false); // Estado para controlar o login
@@ -354,6 +355,11 @@ const InitialPageHeader = () => {
                   >
                     Adicionar Dados
                   </NavDropdown.Item>
+                  <NavDropdown.Item
+                    onClick={() => handleAdminSelect("change-role")}
+                  >
+                    Mudar Cargo de Usuário
+                  </NavDropdown.Item>
                 </NavDropdown>
               )}
             </Nav>
@@ -374,6 +380,7 @@ const InitialPageHeader = () => {
       {adminSelect === "editar" && <EditarContent />}
       {adminSelect === "deletar" && <DeletarContent />}
       {adminSelect === "adicionar" && <AdicionarContent />}
+      {adminSelect === "change-role" && <ChangeUserRoleContent />}
     </>
   );
 };

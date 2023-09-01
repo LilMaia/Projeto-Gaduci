@@ -11,6 +11,7 @@ import {
   getUserValidator,
   updateUserValidator,
 } from "../validators/user-routes-validator.js";
+import { Op } from "sequelize";
 
 // Criando uma instância do roteador
 const userRoutes = Router();
@@ -22,6 +23,21 @@ const handleValidationErrors = (req, res, next) => {
   }
   next();
 };
+
+userRoutes.get("/get-user-by-email/:email", async (req, res) => {
+  try {
+    const user = await User.findAll({
+      where: {
+        email: {
+          [Op.iLike]: `%${req.params.email}%`,
+        },
+      },
+    });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 userRoutes.post(
   "/create-user",

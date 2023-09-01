@@ -6,6 +6,7 @@ import { Button, Modal } from "react-bootstrap";
 const ExcelUploadComponent = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [inputKey, setInputKey] = useState(Date.now()); // Chave para recriar o input
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -115,6 +116,8 @@ const ExcelUploadComponent = () => {
       } catch (error) {
         setModalMessage("Erro ao ler o arquivo Excel:" + error);
         setModalVisible(true);
+      }finally {
+        setInputKey(Date.now());
       }
     }
   };
@@ -125,8 +128,14 @@ const ExcelUploadComponent = () => {
 
   return (
     <div>
-      <h2>Fazer Upload de Excel</h2>
-      <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
+      <h1>Fazer upload de excel</h1>
+      <input
+        key={inputKey} // Definir uma chave diferente para recriar o input
+        type="file"
+        accept=".xlsx, .xls"
+        onChange={handleFileUpload}
+        className="mt-4"
+      />
 
       <Modal show={modalVisible}>
         <Modal.Header>
