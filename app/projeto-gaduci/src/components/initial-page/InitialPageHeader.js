@@ -34,7 +34,7 @@ const InitialPageHeader = () => {
     if (token && !loggedIn) {
       verifyToken(token);
     }
-  });
+  },);
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   const handleServiceSelect = (serviceName) => {
