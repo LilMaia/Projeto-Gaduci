@@ -165,8 +165,8 @@ tributacaoMunicipalRoutes.get("/search-by-nome-or-atividade/:municipio/:searchTe
       where: {
         municipio: municipio,
         [Op.or]: [
-          { nomeDoGrupo: { [Op.iLike]: `%${searchTerm}%` } },
-          { "$atividades.nomeAtividade$": { [Op.iLike]: `%${searchTerm}%` } },
+          { nomeDoGrupo: { [Op.like]: `%${searchTerm.toLowerCase()}%` } },
+          { "$atividades.nomeAtividade$": { [Op.like]: `%${searchTerm.toLowerCase()}%` } },
         ],
       },
       include: [

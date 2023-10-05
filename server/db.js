@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize("postgres://postgres:1234@localhost:5432/gaducidb", { dialect: "postgres" });
+const sequelize = new Sequelize("mysql://root:1234@localhost:3309/gaducidb");
 
 export default sequelize;
